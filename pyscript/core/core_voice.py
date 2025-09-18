@@ -105,7 +105,10 @@ class Voice:
 
     def Stop(self):
         if self._engine:
-            self._engine.stop()
+            try:
+                self._engine.stop()
+            except:
+                pass
 
     def __del__(self):
         self.Stop()

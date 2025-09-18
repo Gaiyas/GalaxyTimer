@@ -14,7 +14,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-from core import core_timer, core_save, core_input, core_voice, core_event, core_oprate
+from core import core_timer, core_save, core_input, core_voice, core_event
 from core.core_define import *
 from core.core_input import KeyType
 from core.functor import CFunctor
@@ -42,11 +42,6 @@ class MainWindow(QLabel):
         self._Pixmap = None
         self._PixmapSize = 72
         self._PixmapUpdateTime = 100
-
-        self.m_AE_Jump_Time1 = 160 / 1000  # 起跳腾空的时间
-        self.m_AE_Jump_Time2 = 40 / 1000  # 腾空落地的时间
-        self.m_AE_Jump_Time3 = 10 / 1000 # 落地到再次起跳的时间
-        self.m_Record_AE_key= False  # 当前正在记录热键
 
         self.m_GlobalReSetKey = None
         self.m_GlobalAEJumpKey_Press = None
@@ -205,22 +200,6 @@ class MainWindow(QLabel):
         # 全局重置
         data = core_save.LoadJson(Path_Setting)
         self.m_GlobalReSetKey = core_input.RegisterHotKey(data.get(SettingName.TimerReset, ["F2"]), self.reset_timer)
-
-    def register_ae_jump_hotkey(self):
-        from core.core_define import OpenAEJump
-        if not OpenAEJump:
-            return
-        data = core_save.LoadJson(Path_Setting)
-        switch = data.get(SettingName.AEJumpSwitch, False)
-        if not switch:
-            self.m_GlobalAEJumpKey_Press = None
-            self.m_GlobalAEJumpKey_Release = None
-            return
-        key = data.get(SettingName.AEJumpKey, ["ALT"])
-        print("当前的跳蚤快捷键：", key)
-        self.m_AE_Jump_Time1 = data.get(SettingName.AEJumpTime1, 150) / 1000
-        self.m_AE_Jump_Time2 = data.get(SettingName.AEJumpTime2, 40) / 1000
-        self.m_AE_Jump_Time3 = data.get(SettingName.AEJumpTime3, 10) / 1000
 
     def reset_timer(self):
         for timer in self.m_AllTimer.values():
